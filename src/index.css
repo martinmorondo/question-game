@@ -14,3 +14,108 @@
   -webkit-text-size-adjust: 100%;
 }
 
+html {
+  background-image: url(https://i.pinimg.com/originals/00/b3/48/00b348495f674003ae9fb58b0eaebf9d.jpg);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: top center;
+}
+
+
+.App {
+  text-align: center;
+  margin-top: 50px;
+}
+
+h1 {
+  color: #fff;
+  font-weight: bold;
+  font-size: 28px;
+}
+
+h2 {
+  color: #fff;
+  font-weight: bold;
+  font-size: 24px;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+li {
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+li:hover {
+  color: #007bff;
+}
+
+.hint {
+  background-color: #f1f1f1;
+  color: #333;
+  padding: 10px;
+  margin-top: 10px;
+}
+
+.progress-bar {
+  height: 10px;
+  background-color: blue;
+  transition: width 1s linear;
+}
+
+/* Animación de entrada */
+.fade-enter {
+  opacity: 0;
+}
+
+.fade-enter-active {
+  opacity: 1;
+  transition: opacity 300ms ease-in;
+}
+
+.fade-exit {
+  opacity: 1;
+}
+
+.fade-exit-active {
+  opacity: 0;
+  transition: opacity 300ms ease-out;
+}
+
+.btn-restart {
+  background-color: rgb(16, 16, 103);
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 30px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: .3s;
+}
+
+.btn-restart:hover {
+  background-color: rgb(5, 5, 20);
+}
+
+.hint-question {
+  padding: 10px 20px;
+  background-color: #ffffff;
+  border: none;
+  border-radius: 25px;
+  color: #000000;
+  font-size: 16px;
+  cursor: pointer;
+  transition: .3s;
+}
+
+.hint-question:hover {
+  background-color: #000000;
+  color: #ffffff;
+}
+
+
+
+
