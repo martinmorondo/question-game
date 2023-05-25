@@ -6,6 +6,7 @@ import 'animate.css';
 import correctAnswer from './sounds/correctAnswer.mp3';
 
 function App() {
+
   const [currentCategory, setCurrentCategory] = useState<string | null>(null);
   const [currentQuestion, setCurrentQuestion] = useState<number>(0);
   const [score, setScore] = useState<number>(0);
@@ -15,6 +16,7 @@ function App() {
   const [progress, setProgress] = useState<number>(100);
   const [gameOver, setGameOver] = useState<boolean>(false);
 
+  // Preguntas y Categorías
   const categoryQuestions = questions[currentCategory];
   const question = categoryQuestions && categoryQuestions[currentQuestion];
 
@@ -45,34 +47,6 @@ function App() {
     }
   };
 
-  const playCorrectSound = () => {
-    const audio = new Audio(correctAnswer);
-    audio.play();
-  };
-
-  useEffect(() => {
-    if (feedback === '¡Respuesta correcta!') {
-      playCorrectSound();
-    }
-  }, [feedback]);
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeRemaining((prevTime) => {
-        if (prevTime === 0) {
-          handleAnswer(''); // Si el tiempo se agota, se considera una respuesta incorrecta
-          return 0;
-        } else {
-          const newProgress = (prevTime / 10) * 100; // Calcula el progreso en base al tiempo restante
-          setProgress(newProgress); // Actualiza el progreso de la barra
-          return prevTime - 1;
-        }
-      });
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, [currentQuestion]);
-
   const handleCategoryChange = (category: string) => {
     setCurrentCategory(category);
     setCurrentQuestion(0);
@@ -94,6 +68,7 @@ function App() {
   };
 
   useEffect(() => {
+    // Animaciones al cargar la página
     const animateElements = document.querySelectorAll('.animate__animated');
 
     const showElements = () => {
@@ -108,7 +83,6 @@ function App() {
       });
     };
 
-   
     // Mostrar elementos animados al cargar la página
     showElements();
 
@@ -122,6 +96,38 @@ function App() {
       });
     }, 3000);
   }, []);
+
+  useEffect(() => {
+    // Reproducir sonido cuando hay una respuesta correcta
+    if (feedback === '¡Respuesta correcta!') {
+      playCorrectSound();
+    }
+  }, [feedback]);
+
+  useEffect(() => {
+    // Temporizador de cuenta regresiva
+    const timer = setInterval(() => {
+      setTimeRemaining((prevTime) => {
+        if (prevTime === 0) {
+          handleAnswer(''); // Si el tiempo se agota, se considera una respuesta incorrecta
+          return 0;
+        } else {
+          const newProgress = (prevTime / 10) * 100; // Calcula el progreso en base al tiempo restante
+          setProgress(newProgress); // Actualiza el progreso de la barra
+          return prevTime - 1;
+        }
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [currentQuestion]);
+
+  // Reproducir sonido de respuesta correcta
+  const playCorrectSound = () => {
+    const audio = new Audio(correctAnswer);
+    audio.play();
+  };
+
   
   return (
     <div className="App">
