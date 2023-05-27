@@ -142,7 +142,7 @@ function App() {
                 <p className="hint animate__animated animate__fadeIn">Pista: {question.hint}</p>
               )}
               <ul>
-                {question.options.map((option, optionIndex) => (
+                {question.options.map((option: string, optionIndex: number) => (
                   <li
                     key={optionIndex}
                     onClick={() => handleAnswer(option)}
