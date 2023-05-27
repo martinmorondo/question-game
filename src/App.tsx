@@ -17,7 +17,7 @@ function App() {
   const [gameOver, setGameOver] = useState<boolean>(false);
 
   // Preguntas y Categorías
-  const categoryQuestions = questions[currentCategory];
+  const categoryQuestions = currentCategory ? questions[currentCategory] : null;
   const question = categoryQuestions && categoryQuestions[currentQuestion];
 
   const handleHint = () => {
@@ -137,21 +137,25 @@ function App() {
         <>
           {categoryQuestions && categoryQuestions.length > 0 && !gameOver ? (
             <div className="animate__animated animate__fadeIn">
-              <h2>{question.question}</h2>
-              {showHint && (
-                <p className="hint animate__animated animate__fadeIn">Pista: {question.hint}</p>
+              {question && (
+                <div>
+                  <h2>{question.question}</h2>
+                  {showHint && (
+                    <p className="hint animate__animated animate__fadeIn">Pista: {question.hint}</p>
+                )}
+                <ul>
+                  {question.options.map((option: string, optionIndex: number) => (
+                    <li
+                      key={optionIndex}
+                      onClick={() => handleAnswer(option)}
+                      className="animate__animated animate__fadeIn"
+                    >
+                      {option}
+                    </li>
+                    ))}
+                  </ul>
+                </div>
               )}
-              <ul>
-                {question.options.map((option: string, optionIndex: number) => (
-                  <li
-                    key={optionIndex}
-                    onClick={() => handleAnswer(option)}
-                    className="animate__animated animate__fadeIn"
-                  >
-                    {option}
-                  </li>
-                ))}
-              </ul>
               {!showHint && (
                 <button onClick={handleHint} className="hint-question animate__animated animate__fadeIn">
                   Mostrar Pista
