@@ -1,12 +1,11 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import questions from './data/questions';
 import 'animate.css';
 import correctAnswer from './sounds/correctAnswer.mp3';
 
-function App() {
-
+function App(): JSX.Element {
   const [currentCategory, setCurrentCategory] = useState<string | null>(null);
   const [currentQuestion, setCurrentQuestion] = useState<number>(0);
   const [score, setScore] = useState<number>(0);
@@ -15,21 +14,22 @@ function App() {
   const [showHint, setShowHint] = useState<boolean>(false);
   const [progress, setProgress] = useState<number>(100);
   const [gameOver, setGameOver] = useState<boolean>(false);
+  const [selectedOption, setSelectedOption] = useState<string>('');
 
-  // Preguntas y Categorías
-  const categoryQuestions = currentCategory ? questions[currentCategory] : null;
+  const categoryQuestions = questions[currentCategory];
   const question = categoryQuestions && categoryQuestions[currentQuestion];
 
-  const handleHint = () => {
+  const handleHint = (): void => {
     setShowHint(true);
   };
 
-  const handleAnswer = (selectedAnswer: string) => {
+  const handleAnswer = (selectedAnswer: string): void => {
     if (gameOver) {
       return; // Si el juego ha terminado, no realizar ninguna acción
     }
 
     if (question && selectedAnswer === question.answer) {
+      document.querySelector('.selected')?.classList.add('animate__flash');
       setScore((prevScore) => prevScore + 1);
       setFeedback('¡Respuesta correcta!');
       playCorrectSound();
@@ -47,7 +47,35 @@ function App() {
     }
   };
 
-  const handleCategoryChange = (category: string) => {
+  const playCorrectSound = (): void => {
+    const audio = new Audio(correctAnswer);
+    audio.play();
+  };
+
+  useEffect(() => {
+    if (feedback === '¡Respuesta correcta!') {
+      playCorrectSound();
+    }
+  }, [feedback]);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeRemaining((prevTime) => {
+        if (prevTime === 0) {
+          handleAnswer(''); // Si el tiempo se agota, se considera una respuesta incorrecta
+          return 0;
+        } else {
+          const newProgress = (prevTime / 10) * 100; // Calcula el progreso en base al tiempo restante
+          setProgress(newProgress); // Actualiza el progreso de la barra
+          return prevTime - 1;
+        }
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [currentQuestion]);
+
+  const handleCategoryChange = (category: string): void => {
     setCurrentCategory(category);
     setCurrentQuestion(0);
     setScore(0);
@@ -57,7 +85,7 @@ function App() {
     setGameOver(false);
   };
 
-  const handleRestartGame = () => {
+  const handleRestartGame = (): void => {
     setCurrentCategory(null);
     setCurrentQuestion(0);
     setScore(0);
@@ -68,16 +96,15 @@ function App() {
   };
 
   useEffect(() => {
-    // Animaciones al cargar la página
     const animateElements = document.querySelectorAll('.animate__animated');
 
-    const showElements = () => {
+    const showElements = (): void => {
       animateElements.forEach((element) => {
         element.classList.add('visible');
       });
     };
 
-    const hideElements = () => {
+    const hideElements = (): void => {
       animateElements.forEach((element) => {
         element.classList.remove('visible');
       });
@@ -97,38 +124,6 @@ function App() {
     }, 3000);
   }, []);
 
-  useEffect(() => {
-    // Reproducir sonido cuando hay una respuesta correcta
-    if (feedback === '¡Respuesta correcta!') {
-      playCorrectSound();
-    }
-  }, [feedback]);
-
-  useEffect(() => {
-    // Temporizador de cuenta regresiva
-    const timer = setInterval(() => {
-      setTimeRemaining((prevTime) => {
-        if (prevTime === 0) {
-          handleAnswer(''); // Si el tiempo se agota, se considera una respuesta incorrecta
-          return 0;
-        } else {
-          const newProgress = (prevTime / 10) * 100; // Calcula el progreso en base al tiempo restante
-          setProgress(newProgress); // Actualiza el progreso de la barra
-          return prevTime - 1;
-        }
-      });
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, [currentQuestion]);
-
-  // Reproducir sonido de respuesta correcta
-  const playCorrectSound = () => {
-    const audio = new Audio(correctAnswer);
-    audio.play();
-  };
-
-  
   return (
     <div className="App">
       <h1 className="animate__animated animate__fadeIn">Preguntados</h1>
@@ -137,25 +132,24 @@ function App() {
         <>
           {categoryQuestions && categoryQuestions.length > 0 && !gameOver ? (
             <div className="animate__animated animate__fadeIn">
-              {question && (
-                <div>
-                  <h2>{question.question}</h2>
-                  {showHint && (
-                    <p className="hint animate__animated animate__fadeIn">Pista: {question.hint}</p>
-                )}
-                <ul>
-                  {question.options.map((option: string, optionIndex: number) => (
-                    <li
-                      key={optionIndex}
-                      onClick={() => handleAnswer(option)}
-                      className="animate__animated animate__fadeIn"
-                    >
-                      {option}
-                    </li>
-                    ))}
-                  </ul>
-                </div>
+              <h2>{question.question}</h2>
+              {showHint && (
+                <p className="hint animate__animated animate__fadeIn">Pista: {question.hint}</p>
               )}
+              <ul>
+                {question.options.map((option, optionIndex) => (
+                  <li
+                    key={optionIndex}
+                    onClick={() => handleAnswer(option)}
+                    onMouseEnter={() => setSelectedOption(option)}
+                    className={`animate__animated animate__fadeIn ${
+                      selectedOption === option ? 'selected' : ''
+                    }`}
+                  >
+                    {option}
+                  </li>
+                ))}
+              </ul>
               {!showHint && (
                 <button onClick={handleHint} className="hint-question animate__animated animate__fadeIn">
                   Mostrar Pista
@@ -170,6 +164,14 @@ function App() {
                 style={{ width: `${progress}%` }}
               ></div>
               <p className="animate__animated animate__fadeIn">Puntuación: {score}</p>
+
+              {/* Agregar aquí el código del timer y la barra de progreso */}
+              <div className="timer-container">
+                <div className="timer">{timeRemaining}</div>
+                <div className="progress-bar-container">
+                  <div className="progress-bar" style={{ width: `${progress}%` }}></div>
+                </div>
+              </div>
             </div>
           ) : (
             <div className="resultados animate__animated animate__fadeIn">
@@ -183,7 +185,7 @@ function App() {
         </>
       ) : (
         <div>
-              <h2 className="animate__animated animate__fadeIn">Elige una categoría</h2>
+          <h2 className="animate__animated animate__fadeIn">Elige una categoría</h2>
           <ul>
             <li
               onClick={() => handleCategoryChange('Geografía')}
@@ -198,22 +200,31 @@ function App() {
               Deportes
             </li>
             <li
-              onClick={() => handleCategoryChange('Historia')}
-              className="animate__animated animate__fadeIn"
-            >
-              Historia
-            </li>
-            <li
-              onClick={() => handleCategoryChange('Programación')}
-              className="animate__animated animate__fadeIn"
-            >
-              Programación
-            </li>
-          </ul>
-        </div>
-      )}
-    </div>
-  );
+  onClick={() => handleCategoryChange('Deportes')}
+  className="animate__animated animate__fadeIn"
+>
+  Deportes
+</li>
+<li
+  onClick={() => handleCategoryChange('Historia')}
+  className="animate__animated animate__fadeIn"
+>
+  Historia
+</li>
+<li
+  onClick={() => handleCategoryChange('Programación')}
+  className="animate__animated animate__fadeIn"
+>
+  Programación
+</li>
+</ul>
+</div>
+)}
+</div>
+);
 }
 
 export default App;
+
+
+       
