@@ -116,6 +116,49 @@ li:hover {
   color: #ffffff;
 }
 
+.selected {
+  animation-name: higlight;
+  animation-duration: 1s;
+  animation-fill-mode: both;
+}
+
+.selected:hover {
+  font-weight: bold;
+  color: black;
+  background-color: #33ff005a;
+  box-shadow: 0 0 5px rgba(255, 204, 0, 0.5);
+  border-radius: 5px;
+}
+
+.timer-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.timer {
+  font-size: 32px;
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.progress-bar-container {
+  width: 200px;
+  height: 10px;
+  background-color: #f0f0f0;
+}
+
+.progress-bar {
+  height: 100%;
+  background-color: #54a0ff;
+  transition: width 0.2s ease-in-out;
+}
+
+
+
+
+
 
 
 
